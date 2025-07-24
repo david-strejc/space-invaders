@@ -259,6 +259,9 @@ class SpaceInvaders extends Phaser.Scene {
         
         // Check bullet-shield collisions
         this.checkBulletShieldCollisions();
+        
+        // Check alien-shield collisions
+        this.checkAlienShieldCollisions();
 
         // Update UFO
         if (this.ufo.active) {
@@ -537,6 +540,38 @@ class SpaceInvaders extends Phaser.Scene {
                         this.shields.splice(i, 1);
                     }
                     break;
+                }
+            }
+        });
+    }
+    
+    checkAlienShieldCollisions() {
+        // Check each alien against shields
+        this.aliens.children.entries.forEach(alien => {
+            if (!alien.active) return;
+            
+            for (let i = this.shields.length - 1; i >= 0; i--) {
+                const shield = this.shields[i];
+                // Aliens are about 40x40, so use radius 20
+                const collision = shield.checkCollision(alien.x, alien.y, 20);
+                
+                if (collision.hit) {
+                    // Alien carves through shield like a knife
+                    shield.damage(collision.row, collision.col, 4); // Large damage radius
+                    
+                    // Create carving effect - damage multiple times in a line
+                    for (let j = 0; j < 3; j++) {
+                        const extraRow = collision.row + j;
+                        if (extraRow < shield.pixels.length) {
+                            shield.damage(extraRow, collision.col, 3);
+                        }
+                    }
+                    
+                    // Remove destroyed shields
+                    if (shield.isDestroyed()) {
+                        shield.destroy();
+                        this.shields.splice(i, 1);
+                    }
                 }
             }
         });
