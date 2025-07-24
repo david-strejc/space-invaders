@@ -1,0 +1,12 @@
+{
+  "name": "space-invaders",
+  "version": "1.0.0",
+  "description": "Modern Space Invaders with custom SVG graphics",
+  "main": "index.js",
+  "scripts": {
+    "start": "python3 -m http.server 8000"
+  },
+  "dependencies": {
+    "phaser": "^3.70.0"
+  }
+}
